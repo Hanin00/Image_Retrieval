@@ -30,7 +30,7 @@ class GraphConvolution(Module):
 #input : (100, 10), output : (1000, 10), adj : (1000,100), support(100,10)
 
     def forward(self, input, adj):
-        support = torch.mm(input, self.weight) #input : 100x10, adj : 1000,100, weight : 10, 100
+        support = torch.mm(input, self.weight) #input : 100x10
         output = torch.spmm(adj, support)
         if self.bias is not None:
             return output + self.bias
@@ -56,9 +56,10 @@ class GCN(nn.Module):   #nhid : 20, nfeat : 100, self : GCN(), nclass : 15, drop
 
     # X : 초기 랜덤값 -> 학습 하면서 변경
     def forward(self, x, adj):
-        x = F.relu(self.gc1(x , adj)) #adj : (1000,100), x = 100, 10
+        x = F.relu(self.gc1(x , adj)) #adj : (1000,100),
         x = F.dropout(x, self.dropout, training=self.training)
         #x = self.gc2(x, adj.T) #주석하면~ 1000x100
         x = self.gc2(x, torch.ones(1000,1000))
+
 
         return F.log_softmax(x, dim=1)
