@@ -2,26 +2,14 @@ import dgl
 import torch
 import torch.nn as nn
 import sys
-import GCN as md
 import torch
-import util as ut
-import util2 as ut2
 from torch.nn.modules.module import Module
 # import pandas as pd
-import torch.optim as optim
-import pickle
-import torch.nn.functional as F
-import numpy as np
-from gensim.models import FastText
-import torch.utils.data as utils
-from torch.autograd import Variable
-from torch.utils.data import Dataset, DataLoader
-from datasetTest import GraphDataset
 from torch.nn.parameter import Parameter
 import math
-from dgl.dataloading import GraphDataLoader
-from torch.utils.data.sampler import SubsetRandomSampler
-import model as md
+from sklearn.preprocessing import normalize
+import torch.nn.functional as F
+
 
 
 # gpu 사용
@@ -52,12 +40,14 @@ class GraphConvolution(Module):
         if self.bias is not None:
             self.bias.data.uniform_(-stdv, stdv)
 
-    def forward(self, input, adj):
+    def forward(self, input, adj):   # in_feat : Tensor(100,10), g : tensor(100, 100)
         self.weight.to(device)
         self.bias.to(device)
-        support = torch.mm(input, self.weight).to(device) #adj = 1,100,100  input = 100,10,  self.weight = 10,15
+        
+        support = torch.mm(input, self.weight).to(device) #adj = 100,100  input = 100,10,  self.weight = 10,15
+        #print("support : ", support)
         output = torch.spmm(adj, support).to(device) #adj = 1,100,100, support = 100, 15
-
+        #print("output : ", output)
         if self.bias is not None:
             return output + self.bias
         else:
@@ -67,20 +57,21 @@ class GraphConvolution(Module):
         return self.__class__.__name__ + ' (' \
                + str(self.in_features) + ' -> ' \
                + str(self.out_features) + ') '
+               
 
 # - 여기까지
 class GCN(nn.Module):
-    def __init__(self, in_feats, h_feats, num_classes):
+    def __init__(self, in_feats, h_feats, num_classes):   
         super(GCN, self).__init__()
         self.conv1 = GraphConvolution(in_feats, h_feats).to(device) #h_feats = 100, in_feats = 10, num_classes = 15
-        self.conv2 = GraphConvolution(h_feats, h_feats).to(device)
-        self.conv3 = GraphConvolution(h_feats, num_classes).to(device)
+        self.conv2 = GraphConvolution(h_feats, num_classes).to(device)
 
-    def forward(self, g,in_feat ):#in_feat : 100,10, g = 1, 100,100
-        h = self.conv1(in_feat, g).to(device)  #g : tensor(1, 100, 100), in_feat : Tensor(100,10)
+    def forward(self, g, in_feat ):#g = 1, 100,100, in_feat : 100,10 
+        h = self.conv1(in_feat, g).to(device)  # in_feat : Tensor(100,10), g : tensor(100, 100)
         h = F.relu(h) # h = 100, 15
-        h = self.conv2(h,torch.empty(100,100).to(device)) # 15x 100    100x 100   -> 15x100
-        #h = F.relu(h)
-        h = self.conv3(h,torch.ones(10,100).to(device))
-       # h = self.conv2(g,h)   
-        return  F.log_softmax(h, dim=1)
+        h = self.conv2(h,torch.ones(10,100).to(device)) # 15x 100    100x 100   -> 15x100
+        h = F.softmax(h, dim=1)
+        print("h : ", h)
+
+        return h
+        #return  F.softmax(h, dim=1)

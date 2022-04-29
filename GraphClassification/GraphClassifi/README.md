@@ -20,8 +20,13 @@ Visual Genome을 사용한 Graph classfication 모델
 ### **Input data format**
 
 > **Adj** : img x freObj x freObj, 
-    한 이미지의 relationship에서 object와 subject가 freObj일 때 1로 체크해 freObj 간 realationship이 있음을 표현함(Adjacency Matrix)
-    이미지 1000개에 대해 학습하므로 한 epoch 당 1000장의 Adjacency Matrix를 학습함
+
+
+
+
+
+
+함
 >   - freObj : 대상이 되는 이미지 1000개의 Scene graph에서 가장 언급량이 많은 Obj 100개 
 > **Feature** : freObjFeature(freObj를 FastText embedding 한 값) 100x10
 > **Label** : 각 id 당 cluster 번호, 총 15개의 cluster 종류가 있음 (1000, 1)    
