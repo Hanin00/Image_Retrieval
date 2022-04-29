@@ -24,10 +24,6 @@ USE_CUDA = torch.cuda.is_available() # GPU를 사용가능하면 True, 아니라
 device = torch.device("cuda" if USE_CUDA else "cpu") # GPU 사용 가능하면 사용하고 아니면 CPU 사용
 print("다음 기기로 학습합니다:", device)
 
-random.seed(777)
-torch.manual_seed(777)
-if device == 'cuda':
-    torch.cuda.manual_seed_all(777)
 
 features, adj, labels = ut.loadData()
 
@@ -79,16 +75,20 @@ model.to(device)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-12)
 
-for epoch in range(20):
-    i = 0
+for epoch in range(2):
+    random.seed(epoch)
+    torch.manual_seed(epoch)
+    if device == 'cuda':
+        torch.cuda.manual_seed_all(epoch)
+    
     #batched_graph : 1,100,100, labels :    attr : 1,15
     for batched_graph, labels,attr in train_dataloader:
         batched_graph, labels, attr = batched_graph.to(device), labels.to(device), attr.to(device)
         batched_graph = batched_graph.squeeze().to(device)
         pred = model(batched_graph, features).to(device) #tensor(1,100,100), features = Tensor(100,10)    
-        print(pred[0].argmax())
+        print(pred[0].argmax()) #동일값 출력하는 오류 발견
         loss = F.nll_loss(pred[0], attr.squeeze().long()).to(device) 
-        print("pred[1] :", pred[1], "pred[0].argmax :", pred[0].argmax(), "attr.squeeze().long : ", attr.squeeze().long())
+        
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -101,8 +101,12 @@ for batched_graph, labels,attr in test_dataloader:
     batched_graph = batched_graph.squeeze().to(device)
     attr = attr.squeeze().long().to(device)
     pred = model(batched_graph, features).to(device)
-    
-    num_correct += (pred[0].argmax() == attr.squeeze().long()).sum().item()
+    print("pred[-1] :", pred[-1], "pred[0].argmax :", pred[0].argmax(), "attr.squeeze().long : ", attr.squeeze().long())
+    #num_correct += (pred[0] == attr.squeeze().long()).sum().item()
+    num_correct += (torch.argmax(pred[0]) == torch.argmax(attr.squeeze().long())).sum().item()
     num_tests += len(labels)
-
+    
+    print("num_tests : ", num_tests)
+    print("labels :", labels)
+    print("num_correct : ", num_correct)
 print('Test accuracy:', num_correct / num_tests)

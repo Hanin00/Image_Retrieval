@@ -69,9 +69,8 @@ class GCN(nn.Module):
     def forward(self, g, in_feat ):#g = 1, 100,100, in_feat : 100,10 
         h = self.conv1(in_feat, g).to(device)  # in_feat : Tensor(100,10), g : tensor(100, 100)
         h = F.relu(h) # h = 100, 15
-        h = self.conv2(h,torch.ones(10,100).to(device)) # 15x 100    100x 100   -> 15x100
+        h = self.conv2(h, torch.ones(10,100).to(device)) # 15x 100    100x 100   -> 15x100
         h = F.softmax(h, dim=1)
-        print("h : ", h)
 
         return h
         #return  F.softmax(h, dim=1)
