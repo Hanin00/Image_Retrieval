@@ -17,6 +17,7 @@ from dgl.dataloading import GraphDataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 import model as md
 import random
+from tqdm import tqdm
 
 
 # gpu 사용
@@ -75,20 +76,21 @@ model.to(device)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-12)
 
-for epoch in range(2):
+for epoch in tqdm(range(10000)):
     random.seed(epoch)
     torch.manual_seed(epoch)
     if device == 'cuda':
         torch.cuda.manual_seed_all(epoch)
-    
+    #num_correct = 0
+
     #batched_graph : 1,100,100, labels :    attr : 1,15
     for batched_graph, labels,attr in train_dataloader:
         batched_graph, labels, attr = batched_graph.to(device), labels.to(device), attr.to(device)
         batched_graph = batched_graph.squeeze().to(device)
         pred = model(batched_graph, features).to(device) #tensor(1,100,100), features = Tensor(100,10)    
-        print(pred[0].argmax()) #동일값 출력하는 오류 발견
-        loss = F.nll_loss(pred[0], attr.squeeze().long()).to(device) 
-        
+        #print(pred[0].argmax()) #동일값 출력하는 오류 발견
+        loss = F.nll_loss(pred[0], attr.squeeze().long()).to(device)
+ 
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -101,12 +103,7 @@ for batched_graph, labels,attr in test_dataloader:
     batched_graph = batched_graph.squeeze().to(device)
     attr = attr.squeeze().long().to(device)
     pred = model(batched_graph, features).to(device)
-    print("pred[-1] :", pred[-1], "pred[0].argmax :", pred[0].argmax(), "attr.squeeze().long : ", attr.squeeze().long())
-    #num_correct += (pred[0] == attr.squeeze().long()).sum().item()
     num_correct += (torch.argmax(pred[0]) == torch.argmax(attr.squeeze().long())).sum().item()
     num_tests += len(labels)
-    
-    print("num_tests : ", num_tests)
-    print("labels :", labels)
-    print("num_correct : ", num_correct)
+
 print('Test accuracy:', num_correct / num_tests)

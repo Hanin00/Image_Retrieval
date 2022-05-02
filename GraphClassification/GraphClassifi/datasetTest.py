@@ -1,6 +1,5 @@
 import sys
 import GCN as md
-import torch
 import util as ut
 import util2 as ut2
 from torch.nn.modules.module import Module
@@ -13,7 +12,6 @@ import numpy as np
 from gensim.models import FastText
 import torch.utils.data as utils
 from torch.autograd import Variable
-
 import torch
 from torch.utils.data import Dataset, DataLoader
 

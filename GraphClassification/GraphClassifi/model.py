@@ -40,7 +40,7 @@ class GraphConvolution(Module):
         if self.bias is not None:
             self.bias.data.uniform_(-stdv, stdv)
 
-    def forward(self, input, adj):   # in_feat : Tensor(100,10), g : tensor(100, 100)
+    def forward(self,input , adj ):   # in_feat : Tensor(100,10), g : tensor(100, 100)
         self.weight.to(device)
         self.bias.to(device)
         
@@ -58,7 +58,6 @@ class GraphConvolution(Module):
                + str(self.in_features) + ' -> ' \
                + str(self.out_features) + ') '
                
-
 # - 여기까지
 class GCN(nn.Module):
     def __init__(self, in_feats, h_feats, num_classes):   
@@ -69,7 +68,7 @@ class GCN(nn.Module):
     def forward(self, g, in_feat ):#g = 1, 100,100, in_feat : 100,10 
         h = self.conv1(in_feat, g).to(device)  # in_feat : Tensor(100,10), g : tensor(100, 100)
         h = F.relu(h) # h = 100, 15
-        h = self.conv2(h, torch.ones(10,100).to(device)) # 15x 100    100x 100   -> 15x100
+        h = self.conv2(h,torch.ones(10,100).to(device)) # 15x 100    100x 100   -> 15x100
         h = F.softmax(h, dim=1)
 
         return h

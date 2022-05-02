@@ -44,6 +44,9 @@ Visual Genome을 사용한 Graph classfication 모델
 - datasetTest.py 
 - Convolution Layer를 추가하거나, Relu 층 추가 시마다 accuracy 변동 폭이 크고, 동일 조건에서도 accuracy의 변동 폭이 큼
 - graph의 label predicate 값이 0-14까지 총 15개의 class로 나오는 것이 아닌 0 또는 1의 벡터로 나와 설계한 내용과 다르다는 오류 발견 -> 해당 내용 04.29 일까지 변경 목표
+-> epoch 10000일 때 accuracy가 0.07임을 확인함
+
+<img src = "https://github.com/Hanin00/Image_Retrieval/blob/f03c4b3e92ba6577b46fef82a2890f7c902d888a/extraImages/graphClassifyAcc.png">
 
 
 **개선에 관한 의견**
