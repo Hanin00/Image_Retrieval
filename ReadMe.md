@@ -40,6 +40,9 @@
 > - Visual Genome Dataset 전처리 관련 Utility Readme 정리
 > - CoraGCN code를 이용한 Node Classification 학습 및 검증 -> data quality issue(epoch 1000 - acc:0.160)
 
+#### 22.05.02
+> - git Readmd 누락 사항 수정
+> - 해당 프로젝트 관련 내용 ppt 정리 후 upload(not yet)
 
 
 >__개선사항__  
