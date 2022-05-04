@@ -24,6 +24,18 @@ import csv
 from scipy.sparse import csr_matrix
 
 
+# utils 이용해 cluster, Adj 생성
+
+''' 해야하는 것
+                        freObj(column) / cluster(label) / Adjset(all of Nums)
+- freObj 100개일 때 5000 - freObj5000/ cluster5000 / Adjset5000
+- freObj 100개일 때 10000 - freObj10000/ cluster10000 / Adjset10000
+- freObj 500개일 때 5000 - freObj5000_500/ cluster5000_500 / Adjset5000_500
+- freObj 500개일 때 10000 - freObj10000_500/ cluster10000_500 / Adjset5000_500
+
+
+'''
+
 def main():
     '''
         csv 파일로 만들어야 하는 것(이미지 천 개에 대한 데이터들) : region_descriptiong> image_regions
@@ -31,8 +43,6 @@ def main():
             featuremap(31310)
             이미지 1000개에 대한 adjMatrix(train 용)
     '''
-    img_id = 2
-    img_cnt = 1000
 
     #featuremap = np.load('./data/idFreFeature.npy')
     #idAdj = np.load('./data/idAdj.npy')
@@ -42,29 +52,28 @@ def main():
     # print(torch.Tensor(AllAdj[1][1]))
 
 
-
     ''' id, Adj, label List 만드는 코드 '''
     #빈출 단어 값
-    testFile = open('../data/freObj.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+    testFile = open('../data/freObj5000.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
     readFile = testFile.readline()
     freObj = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
     freObj= freObj[:100] #빈출 100 단어 만 사용
 
-    testFile = open('../data/cluster.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+    testFile = open('../data/cluster5000.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
     readFile = testFile.readline()
     label = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
-    label = label[:1000]  # 라벨 이미지 개수만큼 가져옴
+    label = label[:5000]  # 라벨 이미지 개수만큼 가져옴
 
 
     # # 임베딩값 freObj x embedding(10)
     # feature = ut.objNameEmbedding(label)
 
     dataset = []
-    for i in range(1000) :
+    for i in range(5000) :
         adj = ut.createAdj(i, freObj)
         dataset.append([i+1, adj, label[i]])
 
-    np.save('./data/frexfre1000.npy', np.ndarray(dataset))
+    np.save('./data/frexfre5000.npy', np.ndarray(dataset))
 
 
     # features = np.load('./data/frexfre1000.npy', allow_pickle=True)[0]

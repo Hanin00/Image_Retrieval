@@ -1,43 +1,53 @@
 import sys
 import csv
 import time
-
 import util as ut
 #import YEmbedding as yed
 import numpy as np
 import pandas as pd
 import json
 import sys
-import torch
+import YEmbedding as yed
+
+'''
+textEmbedding하기 위한 이미지별 phrase 모아서 xlsx로 변경
+region_descriptions.json : visual genome
+'''
+# jsonpath = '../data/region_descriptions.json'
+# xlxspath1 = '../data/image_regions5000.xlsx'
+# xlxspath2 = '../data/image_regions10000.xlsx'
+
+# # YEmbedding값(labels)을 저장
+# ut.jsontoxml(5000, jsonpath, xlxspath1)
+# ut.jsontoxml(10000, jsonpath, xlxspath2)
+
+'''label txt 저장'''
+xlxspath = '../data/image_regions10000.xlsx'
+# Y - image, cluser 몇 번인지~
+embedding_clustering = yed.YEmbedding(xlxspath)
+idCluster = embedding_clustering[['image_id', 'cluster', 'distance_from_centroid']]
+label = idCluster['cluster']
+j = label.tolist()
+
+
+print(type(j))
+print(j)
+list_a = list(map(str, j))
+
+'''txt 로 저장'''
+with open('../data/cluster10000.txt', 'w') as file:
+   file.writelines(','.join(list_a))
+
+
 
 # startId = 1
 # endId = 1000
-# #xlxspath = './data/image_regions.xlsx'
-#
+# #xlxspath = './data/image_regions5000.xlsx'
+
 # testFile = open('./data/cluster.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
 # readFile = testFile.readline()
 # label = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
 # label = label[:1000]  # 클러스터 1000개
-#
-# print("0 : ",label.count('0'))
-# print("1 : ",label.count('1'))
-# print("2 : ",label.count('2'))
-# print("3 : ",label.count('3'))
-# print("4 : ",label.count('4'))
-# print("5 : ",label.count('5'))
-# print("6 : ",label.count('6'))
-# print("7 : ",label.count('7'))
-# print("8 : ",label.count('8'))
-# print("9 : ",label.count('9'))
-# print("10 : ",label.count('10'))
-# print("11 : ",label.count('11'))
-# print("12 : ",label.count('12'))
-# print("13 : ",label.count('13'))
-# print("14 : ",label.count('14'))
-
-
-
-
 
 # # Y - image, cluser 몇 번인지~
 # embedding_clustering = yed.YEmbedding(xlxspath)
@@ -45,43 +55,19 @@ import torch
 # label = idCluster['cluster']
 # df = embedding_clustering[['image_id', 'cluster', 'distance_from_centroid']]
 # print(df)
-#
+
 # print(label)
-
-
-
-
-
-
-
-
-
 
 # print(label)
 # freObj = ut.prequency_feature(1, 1000)
 # adjMatrix = ut.create_adjMatrix(clusterList=label[1])
 # # featuremap =ut.featuremap(startId,endId,freObj)
 
-
 # listitem = label[1]
 # output_array = np.array(listitem)
 
-'''label txt 저장'''
-# xlxspath = './data/image_regions.xlsx'
-# # Y - image, cluser 몇 번인지~
-# embedding_clustering = yed.YEmbedding(xlxspath)
-# idCluster = embedding_clustering[['image_id', 'cluster', 'distance_from_centroid']]
-# label = idCluster['cluster']
-# j = label.tolist()
-# print(type(j))
-# print(j)
-# list_a = list(map(str, j))
-#
-'''txt 로 저장'''
-# with open('cluster.txt', 'w') as file:
-#    file.writelines(','.join(list_a))
-#
-# 
+
+
 ''' 1000개의 이미지의 최빈 objName 100개'''
 # with open('./data/scene_graphs.json') as file:  # open json file
 #     data = json.load(file)
@@ -259,60 +245,85 @@ import torch
 # readFile = testFile.readline()
 # freObj = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
 # freObj = freObj[:100]  # 빈출 100 단어 만 사용
-#
+
 # freObjEmbedding = ut.objNameEmbedding(freObj)
 # freObjEmbedding = torch.tensor(freObjEmbedding)
 
 
-''' image 별로 freObjxfreObj 만들어서 dataset 만듦'''
-''' id, Adj, label List 만드는 코드 '''
-# 빈출 단어 값
-testFile = open('../data/freObj.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
-readFile = testFile.readline()
+# ''' image 별로 freObjxfreObj 만들어서 dataset 만듦'''
+# ''' id, Adj, label List 만드는 코드 '''
+# # 빈출 단어 값
+# testFile = open('../data/freObj5000.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+# readFile = testFile.readline()
 
-freObj = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
-freObj = freObj[:100]  # 빈출 100 단어 만 사용
+# freObj = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
+# freObj = freObj[:100]  # 빈출 100 단어 만 사용
 
-testFile = open('../data/cluster.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
-readFile = testFile.readline()
-label = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
-label = label[:1000]  # 클러스터 1000개
+# testFile = open('../data/cluster.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+# readFile = testFile.readline()
+# label = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
+# label = label[:1000]  # 클러스터 1000개
 
-# # 임베딩값 freObj x embedding(10)
-# feature = ut.objNameEmbedding(label)
-
-
-with open('../data/scene_graphs.json') as file:
-    data1 = json.load(file)
-
-with open('../data/objects.json') as file:  # open json file
-    data2 = json.load(file)
+# # # 임베딩값 freObj x embedding(10)
+# # feature = ut.objNameEmbedding(label)
 
 
-import pickle
-dataset = []
-start = time.time()
-for i in range(1000):
-    adj = ut.createAdj_model2(i, freObj,data1, data2)
-    dataset.append( [adj, label[i]])
+# with open('../data/scene_graphs.json') as file:
+#     data1 = json.load(file)
 
-print("obj : ", time.time() - start)
-
-## Save pickle
-with open("../data/graphDataset.pickle", "wb") as fw:
-    pickle.dump(dataset, fw)
-
-## Load pickle
-with open("../data/graphDataset.pickle", "rb") as fr:
-    data = pickle.load(fr)
-print(data)
+# with open('../data/objects.json') as file:  # open json file
+#     data2 = json.load(file)
 
 
+# import pickle
+# dataset = []
+# start = time.time()
+# for i in range(1000):
+#     adj = ut.createAdj_model2(i, freObj,data1, data2)
+#     dataset.append( [adj, label[i]])
 
+# print("obj : ", time.time() - start)
 
+# ## Save pickle
+# with open("../data/graphDataset.pickle", "wb") as fw:
+#     pickle.dump(dataset, fw)
 
-
+# ## Load pickle
+# with open("../data/graphDataset.pickle", "rb") as fr:
+#     data = pickle.load(fr)
+# print(data)
     # dataset.appen([i + 1, adj, label[i]] )e
-
 #np.save('./data/frexfre1000.npy', np.ndarray(dataset))
 #np.save('./data/frexfre1000.npy', np.ndarray(adj))
+
+
+
+''' Adjacency Matrix, 이미지 개수 만큼 생성 '''
+# testFile = open('../data/freObj10000_500.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+# readFile = testFile.readline()
+# freObj = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
+# freObj = freObj[:500]  # 빈출 100 단어 만 사용
+
+# with open('../data/scene_graphs.json') as file:
+#     data1 = json.load(file)
+# with open('../data/objects.json') as file:  # open json file
+#     data2 = json.load(file)
+
+# import pickle
+# dataset = []
+# start = time.time()
+# for i in range(10000):
+#     adj = ut.createAdj_model2(i, freObj,data1, data2)
+#     #dataset.append((i+1, adj, label[i]))
+#     dataset.append((adj))
+
+# print("obj : ", time.time() - start)
+
+# ## Save pickle
+# with open("../data/Adjset10000_500.pickle", "wb") as fw:
+#     pickle.dump(dataset, fw)
+
+# ## Load pickle
+# with open("../data/Adjset10000_500.pickle", "rb") as fr:
+#     data = pickle.load(fr)
+# print(data)

@@ -1,0 +1,5 @@
+GraphClassification/GraphClassifi/data/Adjset10000.pickle filter=lfs diff=lfs merge=lfs -text
+GraphClassification/GraphClassifi/data/Adjset10000_500.pickle filter=lfs diff=lfs merge=lfs -text
+GraphClassification/GraphClassifi/data/Adjset5000.pickle filter=lfs diff=lfs merge=lfs -text
+GraphClassification/GraphClassifi/data/Adjset5000_500.pickle filter=lfs diff=lfs merge=lfs -text
+*.pickle filter=lfs diff=lfs merge=lfs -text

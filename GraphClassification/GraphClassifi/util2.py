@@ -5,7 +5,7 @@ from openpyxl import Workbook
 from gensim.models import FastText
 from tqdm import tqdm
 from collections import Counter
-
+import torch
 
 ''' 데이터 전처리 관련 utility '''
 
@@ -125,4 +125,48 @@ scene graph에서 object-predicate-subject를 scenetence로 묶어서 임베딩
     padding?
     '''
 
+''' 0503 Dataset 추가'''
+# freObj 생성 시 대상 이미지 수 1000-> 5000/10000 변경
+with open('./data/scene_graphs.json') as file:  # open json file
+    data = json.load(file)
+    object = []
+    for i in range(10000):
+        objects = data[i]["objects"]
+        for j in range(len(objects)):  # 이미지의 object 개수만큼 반복
+            object.append(objects[j]['names'])
+    object = sum(object, [])
+    count_items = Counter(object)
+    frqHundred = count_items.most_common(500)
+    adjColumn = []
+    for i in range(len(frqHundred)):
+        adjColumn.append(frqHundred[i][0])
 
+    with open('./data/freObj5000_500.txt', 'w') as file:
+       file.writelines(','.join(adjColumn))
+
+testFile = open('./data/freObj5000_500.txt','r') # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+readFile = testFile.readline()
+list = (readFile[1:-1].replace("'",'')).split(',')
+
+print(len(list))
+print(list[0])
+
+
+# '''freObj Embedding txt 저장'''
+# testFile = open('./data/freObj5000.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+# readFile = testFile.readline()
+# freObj = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
+# freObj = freObj[:100]  # 빈출 100 단어 만 사용
+
+# freObjEmbedding = objNameEmbedding(freObj)
+# freObjEmbedding = torch.tensor(freObjEmbedding)
+
+# with open('./data/freEmb5000.txt', 'w') as file:
+#        file.writelines(','.join(adjColumn))
+
+
+# f1 = open('./data/imgAdj5000.txt', 'w')
+# for i in range(5000):
+#     df_adj, adjMatrix = createAdj(i, adjColumn)
+#     f1.write(adjMatrix+",")
+# f1.close()

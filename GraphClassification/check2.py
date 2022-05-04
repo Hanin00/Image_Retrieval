@@ -61,11 +61,6 @@ with open(jsonpath) as file:  # open json file
     wb.save(xlsxpath)
 
 
-
-
-
-
-
 '''
     q = 0
     for i in data:

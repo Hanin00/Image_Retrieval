@@ -19,24 +19,40 @@ import model as md
 import random
 from tqdm import tqdm
 
+'''
+    Adjset5000 : 5000x100x100
+    Adjset5000_500 : 5000x500x500
+    Adjset10000 : 10000x100x100
+    Adjset10000 : 10000x100x100
+'''
 
 # gpu 사용
 USE_CUDA = torch.cuda.is_available() # GPU를 사용가능하면 True, 아니라면 False를 리턴
 device = torch.device("cuda" if USE_CUDA else "cpu") # GPU 사용 가능하면 사용하고 아니면 CPU 사용
 print("다음 기기로 학습합니다:", device)
 
+#features, adj, labels = ut.loadData()
 
-features, adj, labels = ut.loadData()
 
-with open("./data/frefre1000.pickle", "rb") as fr:
+#labels
+with open("./data/cluster5000.pickle", "rb") as fr:
+    data = pickle.load(fr)
+labels = data
+
+
+#adj matrix
+#with open("./data/frefre5000.pickle", "rb") as fr:
+with open("./data/Adjset5000.pickle", "rb") as fr:
     data = pickle.load(fr)
 Images = data
 
+
+#features
 # freObj(100)의 fastEmbedding 값 100 x 10
-testFile = open('./data/freObj.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+testFile = open('./data/freObj5000_500.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
 readFile = testFile.readline()
 freObjList = (readFile[1:-1].replace("'", '')).split(',')
-freObjList = freObjList[:100]
+freObjList = freObjList[:500]
 model = FastText(freObjList, vector_size=10, workers=4, sg=1, word_ngrams=1)
  
 features = []
@@ -46,9 +62,12 @@ features = torch.FloatTensor(features)  # tensor(100x10)
 
 features, adj, labels  = features.to(device), adj.to(device), labels.to(device)
 
-with open("./data/frefre1000.pickle", "rb") as fr:
+with open("./data/Adjset5000.pickle", "rb") as fr:
     data = pickle.load(fr)
 Images = data
+
+print(len(Images))
+sys.exit()
 
 dataset = GraphDataset(Images, labels)
 
@@ -65,8 +84,8 @@ train_dataloader = GraphDataLoader(
 test_dataloader = GraphDataLoader(
     dataset, sampler=test_sampler, batch_size=1, drop_last=False)
 
-it = iter(train_dataloader)
-batch = next(it)
+#it = iter(train_dataloader)
+#batch = next(it)
 
 n_labels = 15  # 15
 n_features = features.shape[1]  # 10  #features = Tensor(100,10)
@@ -76,7 +95,7 @@ model.to(device)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-12)
 
-for epoch in tqdm(range(10000)):
+for epoch in tqdm(range(1000)):
     random.seed(epoch)
     torch.manual_seed(epoch)
     if device == 'cuda':

@@ -1,6 +1,5 @@
 *.json
 GraphClassification/GraphClassifi/data/frexfre1000.npy
-<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -168,11 +167,13 @@ NodeClassification/NodeClassific/dum/data.zip
 GraphClassification/GraphClassifi/data/feature_model2.pickle
 NodeClassification/NodeClassific/data/feature_model2.pickle
 GraphClassification/GraphClassifi/data/dataset.pickle
-=======
->>>>>>> upstream/master
 NodeClassification/data/dataset.pickle
 NodeClassification/data/feature_model2.pickle
 NodeClassification/dum/data.zip
 GraphClassification/GraphClassifi/data/frefre1000.pickle
 GraphClassification/GraphClassifi/data/graphDataset.pickle
 NodeClassification/data/graphDataset.pickle
+GraphClassification/GraphClassifi/data/Adjset5000.pickle
+GraphClassification/GraphClassifi/data/Adjset5000_500.pickle
+GraphClassification/GraphClassifi/data/Adjset10000.pickle
+GraphClassification/GraphClassifi/data/Adjset10000_500.pickle

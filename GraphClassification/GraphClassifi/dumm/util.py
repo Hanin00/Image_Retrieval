@@ -8,6 +8,7 @@ import util as ut
 from gensim.models import FastText
 from tqdm import tqdm
 import util as ut
+import YEmbedding as yed
 
 np.set_printoptions(linewidth=np.inf)
 
@@ -148,7 +149,7 @@ def objNameEmbedding(xWords) :
     -> 이름을 합침 '''
 
 def adjColumn_kv(imgCount):
-    with open('./data/scene_graphs.json') as file:  # open json file
+    with open('../data/scene_graphs.json') as file:  # open json file
         data = json.load(file)
         dict = {}
         # dict 생성(obj_id : obj_name)

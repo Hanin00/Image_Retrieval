@@ -21,17 +21,7 @@ import sys
 '''
     Graph Classification
     이미지 하나에 대한 freObj x freObj가 Label 1임을 학습시키고, 이미지를 넣었을 때 label 을 out으로 줘야함
-    
-
-
 '''
-
-
-
-
-
-
-
 
 testFile = open('../data/freObj.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
 readFile = testFile.readline()

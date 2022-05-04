@@ -24,12 +24,12 @@ import pandas as pd
     feature : freObj x freObj 간의 관계가 반영된 matrix를 flatten으로 펼침. 1000x10000
     + freObj x freObj 펼치기 전에 fasttext embedding 값을 곱하면 더 좋을 것 같기두
     Y : 각 id 별 cluster 값
+    
+    freObj5000, AdjSet5000, cluster5000
 '''
 
 
-
-
-testFile = open('../data/freObj.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+testFile = open('../data/freObj5000.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
 readFile = testFile.readline()
 freObj = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
 freObj = freObj[:100]
@@ -64,7 +64,7 @@ adj = torch.FloatTensor(np.load('./data/idAdj.npy'))
 #print("features after nomalize : ", features)
 
 
-testFile = open('../data/cluster.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+testFile = open('../data/cluster5000.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
 readFile = testFile.readline()
 label = (readFile[1:].replace("'", '').replace(' ', '').split(','))
 labels = []

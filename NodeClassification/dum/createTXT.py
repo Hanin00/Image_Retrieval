@@ -18,23 +18,6 @@ import torch
 # readFile = testFile.readline()
 # label = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
 # label = label[:1000]  # 클러스터 1000개
-#
-# print("0 : ",label.count('0'))
-# print("1 : ",label.count('1'))
-# print("2 : ",label.count('2'))
-# print("3 : ",label.count('3'))
-# print("4 : ",label.count('4'))
-# print("5 : ",label.count('5'))
-# print("6 : ",label.count('6'))
-# print("7 : ",label.count('7'))
-# print("8 : ",label.count('8'))
-# print("9 : ",label.count('9'))
-# print("10 : ",label.count('10'))
-# print("11 : ",label.count('11'))
-# print("12 : ",label.count('12'))
-# print("13 : ",label.count('13'))
-# print("14 : ",label.count('14'))
-
 
 
 # # Y - image, cluser 몇 번인지~
@@ -45,9 +28,6 @@ import torch
 # print(df)
 #
 # print(label)
-
-
-
 
 
 
@@ -76,6 +56,8 @@ import torch
 #    file.writelines(','.join(list_a))
 #
 # 
+
+
 ''' 1000개의 이미지의 최빈 objName 100개'''
 # with open('./data/scene_graphs.json') as file:  # open json file
 #     data = json.load(file)
@@ -262,10 +244,6 @@ import torch
 
 
 
-#
-#
-#
-#
 # ''' image 별로 freObjxfreObj 만들어서 dataset 만듦'''
 # ''' id, Adj, label List 만드는 코드 '''
 # # 빈출 단어 값
@@ -284,7 +262,7 @@ import torch
 #
 
 
-testFile = open('../data/freObj.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+testFile = open('../data/freObj5000.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
 readFile = testFile.readline()
 freObj = (readFile[1:-1].replace("'", '').replace(' ', '')).split(',')
 freObj = freObj[:100]  # 빈출 100 단어 만 사용
@@ -297,7 +275,7 @@ with open('../data/objects.json') as file:  # open json file
 import pickle
 dataset = []
 start = time.time()
-for i in range(1000):
+for i in range(5000):
     adj = ut.createAdj_model2(i, freObj,data1, data2)
     #dataset.append((i+1, adj, label[i]))
     dataset.append((adj))
