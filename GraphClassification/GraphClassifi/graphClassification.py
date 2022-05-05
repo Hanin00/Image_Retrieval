@@ -34,24 +34,29 @@ print("다음 기기로 학습합니다:", device)
 #features, adj, labels = ut.loadData()
 
 
-#labels
-with open("./data/cluster5000.pickle", "rb") as fr:
-    data = pickle.load(fr)
-labels = data
-
-
-#adj matrix
-#with open("./data/frefre5000.pickle", "rb") as fr:
-with open("./data/Adjset5000.pickle", "rb") as fr:
-    data = pickle.load(fr)
-Images = data
+#text라 for문을 돌리든 뭘 하든 str -> int로 변경 후 tensor로 변경 해줘야함
+# #labels
+# with open("./data/cluster10000.txt", "rb") as fr:
+#     data = pickle.load(fr)
+# labels = data
+#testFile = open('./data/cluster5000.txt', 'r')
+testFile = open('./data/cluster10000.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+readFile = testFile.readline()
+labels = (readFile[1:-1].replace("'", '')).split(',')
+#labels = labels[:5000]
+labels = labels[:10000]
+labels = torch.FloatTensor(labels) 
 
 
 #features
 # freObj(100)의 fastEmbedding 값 100 x 10
-testFile = open('./data/freObj5000_500.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+#testFile = open('./data/freObj5000.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+
+#testFile = open('./data/freObj5000_500.txt', 'r')
+testFile = open('./data/freObj10000_500.txt', 'r')
 readFile = testFile.readline()
 freObjList = (readFile[1:-1].replace("'", '')).split(',')
+#freObjList = freObjList[:100]
 freObjList = freObjList[:500]
 model = FastText(freObjList, vector_size=10, workers=4, sg=1, word_ngrams=1)
  
@@ -60,14 +65,20 @@ for i in freObjList:
     features.append(list(model.wv[i]))
 features = torch.FloatTensor(features)  # tensor(100x10)
 
-features, adj, labels  = features.to(device), adj.to(device), labels.to(device)
+#adj matrix
+#with open("./data/frefre5000.pickle", "rb") as fr:
 
-with open("./data/Adjset5000.pickle", "rb") as fr:
+#with open("./data/Adjset5000.pickle", "rb") as fr:
+#with open("./data/Adjset5000_500.pickle", "rb") as fr:
+#with open("./data/Adjset10000.pickle", "rb") as fr:
+#with open("./data/Adjset10000_500.pickle", "rb") as fr:
+with open("./data/Adjset10000_500.pickle", "rb") as fr:
     data = pickle.load(fr)
-Images = data
+#Images = data
+adj = data
 
-print(len(Images))
-sys.exit()
+
+features, adj, labels  = features.to(device), adj.to(device), labels.to(device)
 
 dataset = GraphDataset(Images, labels)
 

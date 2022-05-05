@@ -124,9 +124,6 @@ def accuracy(output, labels):  # output : tensor(200, 15), labels : tensor(200,)
 
 
 
-
-
-
 #1000개 이미지에 대한 1000x(100x100) = imageId x (freObj x freObj) = (1000,10000) Feature map 생성
 def loadData():
     with open("./data/feature_model2.pickle", "rb") as fr:
