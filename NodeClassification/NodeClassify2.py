@@ -32,7 +32,6 @@ features = torch.Tensor(features) # tensor(100x10)
 adj = torch.FloatTensor(np.load('./data/idFreFeature.npy'))  # tensor(1000,100)
 
 
-#
 # #Data 분포 보고 싶어서 시각화 해봄.
 # import seaborn as sns
 # import matplotlib.pyplot as plt
@@ -59,12 +58,15 @@ for i in range(1000):
 labels = torch.LongTensor(labels)
 
 
-idx_train, idx_val, idx_test = ut.splitDataset(34,200,300,len(features)) #train/val/test로 나눌 imageId를 가진 배열 return
+idx_train, idx_val, idx_test = ut.splitDataset(34,200,300,len(labels)) #train/val/test로 나눌 imageId를 가진 배열 return
 ut.toDevice(adj, features, labels, idx_train, idx_val, idx_test) # gpu면 gpu로 cpu면 cpu로~
 
 
 n_labels = labels.max().item() + 1  # 15
 n_features = features.shape[1]  # 10
+
+
+
 # seed 고정
 torch.manual_seed(34)
 
@@ -77,12 +79,13 @@ model = md.GCN(nfeat=n_features,
 optimizer = optim.Adam(model.parameters(),
                        lr=0.001, weight_decay=5e-4)
 
-epochs = 1000
-print_steps = 100
+epochs = 10000
+print_steps = 1000
 train_loss, train_acc = [], []
 val_loss, val_acc = [], []
 
-
+#from tqdm import tqdm
+#for i in tqdm(range(epochs)):
 for i in range(epochs):
     tl, ta = ut.train(model,optimizer,features, adj, idx_train,labels)
     train_loss += [tl]
@@ -97,19 +100,17 @@ for i in range(epochs):
                 i, tl, ta, vl, va))
 
 output = model(features, adj) #[100,15]
-print(output.shape)
-print(output)
+# print(output.shape)
+# print(output)
 
-sys.exit()
 
 # test
 samples = 10
 # torch.randperm : 데이터 셔플
 # idx_sample = idx_test[torch.randperm(len(idx_test))[:samples]]
 idx_sample = idx_test[torch.randperm(len(idx_test))[:samples]]
-print(torch.randperm(len(idx_test))[:samples])
-print(idx_test)
-print(idx_sample)
+#print(torch.randperm(len(idx_test))[:samples])
+print("idx_sample : ", idx_sample)
 
 idx2lbl = ['0번 그림', '1번 그림', '2번 그림', '3번 그림', '4번 그림', '5번 그림', '6번 그림', '7번 그림'
     , '8번 그림', '9번 그림', '10번 그림', '11번 그림', '12번 그림', '13번 그림', '14번 그림']

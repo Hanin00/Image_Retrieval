@@ -22,7 +22,7 @@ class GraphDataset(Dataset):
         super(GraphDataset, self).__init__()
         self.x = x_tensor
         self.y = y_tensor.to(device)
-        y_one_hot = torch.zeros((1000, 15)).to(device)
+        y_one_hot = torch.zeros((len(y_tensor), 15)).to(device)
         yUnsqueeze = y_tensor.unsqueeze(1).to(device)
         print(yUnsqueeze.is_cuda)
         

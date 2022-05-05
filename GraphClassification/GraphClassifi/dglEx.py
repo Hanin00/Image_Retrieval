@@ -78,6 +78,7 @@ num_tests = 0
 for batched_graph, labels in test_dataloader:
     pred = model(batched_graph, batched_graph.ndata['attr'].float())
     num_correct += (pred.argmax(1) == labels).sum().item()
+    print("pred.max : ", pred.argmax(1), "labels : ", labels)
     num_tests += len(labels)
 
 print('Test accuracy:', num_correct / num_tests)

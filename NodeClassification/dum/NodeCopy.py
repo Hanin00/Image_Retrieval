@@ -43,8 +43,8 @@ relationship을 더 잘 활용할 수 있는걸 하고싶음..
 # gpu 사용
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
-features = csr_matrix(np.load('./data/idFreFeature.npy'), dtype=np.float32) #csr_matrix : (1000,100)
-adj = torch.FloatTensor(np.load('./data/idAdj.npy')) #tensor(1000,1000)
+features = csr_matrix(np.load('../data/idFreFeature.npy'), dtype=np.float32) #csr_matrix : (1000,100)
+adj = torch.FloatTensor(np.load('../data/idAdj.npy')) #tensor(1000,1000)
 features = csr_matrix(features)
 
 
@@ -58,7 +58,7 @@ def normalize(mx):
 
 
 features = normalize(features)
-testFile = open('./data/cluster.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
+testFile = open('../data/cluster.txt', 'r')  # 'r' read의 약자, 'rb' read binary 약자 (그림같은 이미지 파일 읽을때)
 readFile = testFile.readline()
 label = (readFile[1:].replace("'", '').replace(' ', '').split(','))
 labels = []
@@ -96,6 +96,7 @@ class GraphConvolution(Module):
 
         # weight reset
         self.weight = Parameter(torch.FloatTensor(in_features, out_features))  # # out_features : 20, in_features : 100, self : GraphConvolution(100->20), bias : True
+
         if bias:
             self.bias = Parameter(torch.FloatTensor(out_features))
         else:
@@ -153,7 +154,7 @@ torch.manual_seed(34)
 model = GCN(nfeat=n_features,
             nhid=20,  # hidden = 16
             nclass=n_labels,
-            dropout=0.5)  # dropout = 0.5
+            dropout=0.5).to(device)  # dropout = 0.5
 optimizer = optim.Adam(model.parameters(),
                        lr=0.001, weight_decay=5e-4)
 
@@ -163,6 +164,7 @@ def step():
     model.train()  # model 학습모드로
     optimizer.zero_grad()
     output = model(features, adj)  # model에 값 넣음  tensor(1000,15)
+
     loss = F.nll_loss(output[idx_train], labels[idx_train])  # loss 함수   tensor, torch.float32
     acc = accuracy(output[idx_train], labels[idx_train])  # accuracy 파악
     loss.backward()

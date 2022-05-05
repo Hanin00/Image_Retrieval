@@ -22,9 +22,9 @@ class GCN(nn.Module):
         super(GNN, self).__init__()
 
         self.feature_extractor = nn.Sequential(
-                                    GNN_layer(num_feature, 16, A),
+                                    GCN_layer(num_feature, 16, A),
                                     nn.ReLU(),
-                                    GNN_layer(16, num_class, A)
+                                    GCN_layer(16, num_class, A)
                                 )
         
     def forward(self, X):

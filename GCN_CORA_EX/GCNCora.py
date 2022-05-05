@@ -21,7 +21,7 @@ from scipy.sparse import eye
 from pathlib import Path
 from functools import partial
 import matplotlib
-
+import sys 
 
 #for commit
 
@@ -133,9 +133,20 @@ class GraphConvolution(Module):
         if self.bias is not None:
             self.bias.data.uniform_(-stdv, stdv)
 
+
     def forward(self, input, adj):
         support = torch.mm(input, self.weight) #행렬 곱, input 데이터(feature)와 adj를 곱함
         output = torch.spmm(adj, support) #희소행렬 곱  -> Adj X (feature matrix X weight)
+        
+        print("input : ",input.shape)
+        print("self.weight : ",self.weight.shape)
+        print("adj : ",adj.shape)
+        print("support : ",support.shape)
+
+        sys.exit()
+
+
+        
         if self.bias is not None:
             return output + self.bias
         else:

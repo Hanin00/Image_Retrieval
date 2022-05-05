@@ -167,6 +167,7 @@ class GCN(nn.Module):
         self.gc2 = GraphConvolution(nhid, nclass) # hidden layer의 차원, 출력 데이터의 차원(해당 예제에서는 논문의 label 수)   # self : : GraphConvolution(20->7), in_features : 20, out_features : 7, bias = True
         self.dropout = dropout #Dropout의 비율, over fitting을 막기 위해서 사용, 학습 시 레어어 간 연결 중 일부를 랜덤하게 삭제해, 일반화 성능이 높아짐.
 
+
     def forward(self, x, adj): # 순전파, 학습
         x = F.relu(self.gc1(x, adj)) # relu, 활성화 함수, input = tensor , output = tensor
         x = F.dropout(x, self.dropout, training=self.training) # dropout을 통해 overfitting을 막음

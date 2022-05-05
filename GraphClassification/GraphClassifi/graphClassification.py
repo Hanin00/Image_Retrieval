@@ -45,7 +45,8 @@ readFile = testFile.readline()
 labels = (readFile[1:-1].replace("'", '')).split(',')
 #labels = labels[:5000]
 labels = labels[:10000]
-labels = torch.FloatTensor(labels) 
+labels = torch.FloatTensor(labels) .to(device)
+
 
 
 #features
@@ -63,7 +64,7 @@ model = FastText(freObjList, vector_size=10, workers=4, sg=1, word_ngrams=1)
 features = []
 for i in freObjList:
     features.append(list(model.wv[i]))
-features = torch.FloatTensor(features)  # tensor(100x10)
+features = torch.FloatTensor(features).to(device)  # tensor(100x10)
 
 #adj matrix
 #with open("./data/frefre5000.pickle", "rb") as fr:
@@ -78,14 +79,14 @@ with open("./data/Adjset10000_500.pickle", "rb") as fr:
 adj = data
 
 
-features, adj, labels  = features.to(device), adj.to(device), labels.to(device)
+#features, adj, labels  = features.to(device), adj.to(device), labels.to(device)
 
-dataset = GraphDataset(Images, labels)
+dataset = GraphDataset(adj, labels).to(device)
 
 dataloader = DataLoader(dataset=dataset, batch_size=1, shuffle=False, drop_last=False)
 
-num_examples = len(dataset)
-num_train = int(num_examples * 0.8)
+num_examples = len(dataset).to(device)
+num_train = int(num_examples * 0.8).to(device)
 
 train_sampler = SubsetRandomSampler(torch.arange(num_train).to(device))
 test_sampler = SubsetRandomSampler(torch.arange(num_train, num_examples).to(device))
@@ -106,7 +107,7 @@ model.to(device)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-12)
 
-for epoch in tqdm(range(1000)):
+for epoch in tqdm(range(10)):
     random.seed(epoch)
     torch.manual_seed(epoch)
     if device == 'cuda':
