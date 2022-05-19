@@ -2,4 +2,6 @@ torch
 numpy
 pandas
 scipy
-*
+dgl
+openpyxl
+gensim
